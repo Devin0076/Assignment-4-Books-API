@@ -53,6 +53,32 @@ app.post('/api/books', (req, res) => {
 });
 
 
+// PUT /api/books/:id - update an existing book
+app.put('/api/books/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const book = books.find(b => b.id === id);
+
+  // if no matching book, return error message
+  if (!book) {
+    return res.status(404).json({ message: 'Book not found' });
+  }
+
+  const { title, author, genre, copiesAvailable } = req.body;
+
+  // only update provided fields
+  if (title !== undefined) book.title = title;
+  if (author !== undefined) book.author = author;
+  if (genre !== undefined) book.genre = genre;
+  if (copiesAvailable !== undefined) {
+    const num = parseInt(copiesAvailable);
+    if (!isNaN(num)) book.copiesAvailable = num;
+  }
+
+  res.json(book);
+});
+
+
+
 // health check route
 app.get('/', (_req, res) => res.send('Books API is running'));
 
