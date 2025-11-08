@@ -13,6 +13,22 @@ let books = [
   { id: 3, title: "1984", author: "George Orwell", genre: "Dystopian Fiction", copiesAvailable: 7 }
 ];
 
+// GET all books
+app.get('/api/books', (_req, res) => {
+  res.json(books);
+});
+
+// GET a specific book by ID
+app.get('/api/books/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const book = books.find(b => b.id === id);
+  if (!book) {
+    return res.status(404).json({ message: 'Book not found' });
+  }
+  res.json(book);
+});
+
+
 // health check route
 app.get('/', (_req, res) => res.send('Books API is running'));
 
