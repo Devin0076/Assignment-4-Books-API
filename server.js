@@ -28,6 +28,30 @@ app.get('/api/books/:id', (req, res) => {
   res.json(book);
 });
 
+// POST /api/books - add a new book
+app.post('/api/books', (req, res) => {
+  const { title, author, genre, copiesAvailable } = req.body;
+
+  // making sure required fields are present
+  if (!title || !author) {
+    return res.status(400).json({ message: 'Title and author required' });
+  }
+
+  // generate next id automatically
+  const nextId = books.length ? Math.max(...books.map(b => b.id)) + 1 : 1;
+
+  const newBook = {
+    id: nextId,
+    title,
+    author,
+    genre: genre ?? null,
+    copiesAvailable: Number.isInteger(copiesAvailable) ? copiesAvailable : 0,
+  };
+
+  books.push(newBook);
+  res.status(201).json(newBook);
+});
+
 
 // health check route
 app.get('/', (_req, res) => res.send('Books API is running'));
